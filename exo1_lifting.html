@@ -34,7 +34,7 @@
         
         render(){
             return(
-            <input type="text" value={this.state.valeur} onChange={this.handleChange}/>
+            <input type="text" value={this.props.valeur} onChange={this.handleChange}/>
             )
         }
     }
@@ -63,7 +63,7 @@
 
         render(){
             console.log('Render Parent');
-            console.log('Render Parent state value->',this.state.value);
+            console.log('Render Parent state value->',this.state.valeur);
             return(
                 <div>
                     <BaseNumberInput valeur={this.state.valeur} changeFct={this.onChange}/>

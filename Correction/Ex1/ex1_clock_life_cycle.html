@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Hello React</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <style>
+        .heading{
+            color: purple;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+    const second = 1000;
+
+    class App extends React.Component{
+        constructor(props) {
+            super(props);
+            this.state = {show : false};
+        }
+
+        componentDidMount() {
+            this.setState({show : true });
+            
+            setTimeout(() => {
+                this.setState({ show : false });
+            }, 5 * second);
+        }
+
+        render() {
+            console.log(this.state.show)
+            return (
+                <div>
+                   { this.state.show && <Clock /> }
+                </div>
+            );
+        }
+    }
+
+    class Clock extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {date: new Date()};
+            this.timer = null;
+        }
+
+        componentDidMount() {
+            this.timer = setInterval(() => {
+                this.setState({ date : new Date })
+            }, second);
+        }
+
+        componentWillUnmount() {
+            clearInterval(this.timer);
+        }
+
+        render() {
+            return (
+                <div>
+                    <h1>Time: {this.state.date.toLocaleTimeString()}</h1>
+                </div>
+            );
+        }
+    }
+
+    const container = document.getElementById('root');
+
+    ReactDOM.render(
+        <App />,
+        container
+    );
+    </script>
+</body>
+
+</html>

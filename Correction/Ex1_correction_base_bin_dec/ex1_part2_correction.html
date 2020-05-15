@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Hello React</title>
+  <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+  <!-- permet de compiler le JSX -->
+  <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+
+class BaseNumberInput extends React.Component{
+
+  handleChange = (e) => {
+    // vérification des données avant traitement dans le parent
+    const value = e.target.value;
+
+    // méthod props appellée dans le contexte du parent
+    this.props.onChangeBase(value, this.props.base);
+  }
+
+  render(){
+
+    // à chaque fois que je met une nouvelle valeur dans le champ input
+    // le parent renvoie la props number qui met à jour le rendu ci-dessous
+    const  number  = this.props.number;
+
+    return (
+      <React.Fragment>
+        <p>Base {this.props.base} </p>
+        {/* on déclenche la méthode handClick qui déclenchera la méthode du parent */}
+        <input value={number} onChange={this.handleChange} />
+      </React.Fragment>
+    )
+  }
+}
+
+class App extends React.Component{
+
+  constructor(props){
+    super(props);
+    this.state = {
+      binary : '',
+      decimal : ''
+    }
+  }
+
+  handleChange = (v, b) =>{
+
+    console.log(v, b)
+
+    if( Number.isNaN( parseInt( v ) )  === true  ) { v = '' };
+
+    if ( b === 'binary' ){
+
+      this.setState({
+        binary : v!='' ? parseInt(v, 10).toString(2) : '',
+        decimal : v
+      })
+    }
+
+    if( b === 'decimal' ){
+      this.setState({
+        decimal : v!= '' ? parseInt(v, 2) : '',
+        binary : v
+      })
+    }
+  }
+
+  render(){
+
+    const { decimal, binary } = this.state ;
+
+    return (
+      <div className="container">
+        <div className="row">
+          <div className="col-md-12">
+            {/* 
+              Une props peut exécuter une fonction dans le parent et être déclenchée dans l'enfant 
+            */}
+            <BaseNumberInput number={decimal} onChangeBase={(v, b) => this.handleChange(v, b)} base="binary"  />
+            <BaseNumberInput number={binary} onChangeBase={(v, b) => this.handleChange(v, b)} base ="decimal" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(
+  <App />,
+  document.getElementById('root')
+);
+
+</script>
+</body>
+</html>

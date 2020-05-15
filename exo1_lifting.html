@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello React</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- compilation JSX => JS -->
+    <script type="text/babel">
+
+    class BaseNumberInput extends React.Component{
+        constructor(props){
+            super(props);
+            this.state = {
+                valeur : this.props.valeur
+            }
+        }
+
+        handleChange = (event) =>{
+            //console.log('** BaseNumberInput change ***');
+            const { value } = event.target;
+            // console.log('value -> ',value);
+
+            this.setState({ valeur: value }, () => { 
+                // console.log('value state -> ',this.state.valeur);
+                this.props.changeFct(this.state.valeur);
+                }
+            );
+        }
+        
+        render(){
+            return(
+            <input type="text" value={this.state.valeur} onChange={this.handleChange}/>
+            )
+        }
+    }
+
+    class App extends React.Component{
+        constructor(props){
+            super(props);
+            this.state = {
+                valeur : ''
+            }
+        }
+
+        onChange = (receive) => {
+            console.log('App value ->',receive)
+            this.setState({ valeur: receive }, () => {
+                console.log('just fun');
+            });
+        }
+
+        shouldComponentUpdate(nextProps, nextState) {
+            //console.log('shouldComponentUpdate');
+            console.log('shouldComponentUpdate nextProps->',nextProps);
+            console.log('shouldComponentUpdate nextState->',nextState);
+            return true;
+        }
+
+        render(){
+            console.log('Render Parent');
+            console.log('Render Parent state value->',this.state.value);
+            return(
+                <div>
+                    <BaseNumberInput valeur={this.state.valeur} changeFct={this.onChange}/>
+                    <BaseNumberInput valeur={this.state.valeur} changeFct={this.onChange}/>
+                </div>
+            )
+        }
+    }
+
+     ReactDOM.render(
+         <App/>,
+         document.getElementById("root")
+     );
+    </script>
+  </body>
+</html>

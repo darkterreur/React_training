@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Hello React</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <style>
+        .app_btn{
+            margin: 2rem;
+        }
+        .app__center{
+            text-align: center;
+            font-size: 2rem;
+        }
+    </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+    
+
+
+
+
+    class Login extends React.Component{
+        constructor(props) {
+            super(props);
+            this.state = {
+                email : '',
+                password : '',
+                auth : false,
+                isSubmit : false
+            }
+        }
+
+        handleSubmit = (event) => {
+            event.preventDefault();
+
+            const {email, password} = this.state;
+     
+            if(email === 'test@test.fr' && password === 'hello'){
+              this.setState({auth:true, isSubmit:true})
+            }else{
+              this.setState({auth:false, password:"", isSubmit:true})
+            }
+        }
+
+        handleChange = (event) => {
+            const {name, value} = event.target;
+
+            //Les crochets récupèrent le name et associent la valeur(nom du champ au nom du state, de manière dynamique.)
+            // [name] = clé (et PAS une variable)
+            this.setState({ [name] : value });
+        }
+
+        render(){
+            const valid = this.state.email && this.state.password;
+
+            return (
+                <div>
+                    <form onSubmit={this.handleSubmit}>
+
+                        {this.state.isSubmit && this.state.auth === false ? <p>Erreur de connexion (mot de passe ou login)</p> : null}
+
+                        <div>
+                            <label >Email adress :</label>
+                            <input type="email" name="email" onChange={this.handleChange} />
+                        </div>
+                        <div>
+                            <label >Password :</label>
+                            <input type="password" name="password" onChange={this.handleChange} />
+                        </div>
+                        
+                        <input disabled={!valid} type="submit" value="Connect" />
+                    </form>
+                </div>
+            )
+        }
+    }
+
+    ReactDOM.render(
+        <Login />,
+         document.getElementById('root')
+    );
+    
+
+
+
+
+
+    </script>
+</body>
+
+</html>

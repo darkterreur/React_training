@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Hello React</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+
+<body>
+    <div id="root"></div>
+
+
+
+
+
+
+
+
+
+
+    <div class="container">
+        
+            <form>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Email address</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Password</label>
+                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                    <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script type="text/babel">
+   
+        const questions = {
+            'symfony' : {
+                title : "Symfony design pattern",
+                choices : ['MMV', 'MVC', 'MMVV'],
+                response : 1,
+                type : "select",
+                name : "symfony",
+                feedback : 'Symfony est basé sur le pattern MVC'
+            },
+            'react' : {
+                title : "React est-il un framework ?",
+                choices : ['yes', 'no'],
+                response : 1,
+                type : "radio",
+                name : "react",
+                feedback : "React est une librairie"
+            },
+            'jsx' : {
+                title : "JSX c'est quoi ?",
+                choices : ['JSX est un langage compilé', 'JSX est un sur-ensemble développé par Facebook'],
+                response : 1,
+                type: "radio" ,
+                name : "jsx",
+                feedback : 'JSX est un sur ensemble à JS'
+            }
+        };
+
+
+    class Select extends React.Component{
+        
+        constructor(props){
+            super(props);
+        }
+
+        render() {
+
+            console.log('Select ->');
+            return(
+                <div></div>
+            );
+        }
+    }
+
+    class Radio extends React.Component{
+        
+        constructor(props){
+            super(props);
+        }
+
+        render() {
+
+            console.log('Radio ->');
+            return(
+                <div></div>
+            );
+        }
+    }
+
+    class Input extends React.Component{
+        
+        constructor(props){
+            super(props);
+        }
+
+        render() {
+
+            console.log('Input ->');
+            return(
+                <div></div>
+            );
+        }
+    }
+
+    
+    class Wrapper extends React.Component{
+        
+        render() {
+
+            console.log('Wrapper ->');
+            return(
+                <div>{this.props.children}</div>
+            );
+        }
+    }
+
+    class Form extends React.Component{
+        
+        render() {
+
+            console.log('Form ->');
+            return(
+                <div>{this.props.children}</div>
+            );
+        }
+    }
+
+    class App extends React.Component{
+
+        render(){
+            return(
+                <div className="container">
+                    <div className="container">
+                        <h1>Formulaire</h1>
+                    </div>
+        
+                    <form>
+                        <div className="form-group">
+                            <label htmlFor="exampleInputEmail1">Email address</label>
+                            <input type="email" className="form-control" id="exampleInputEmail1"  placeholder="Enter email" />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="exampleInputPassword1">Password</label>
+                            <input type="password" className="form-control" id="exampleInputPassword1" placeholder="Password" />
+                        </div>
+                        <div className="form-check">
+                            <input type="checkbox" className="form-check-input" id="exampleCheck1" />
+                            <label className="form-check-label" htmlFor="exampleCheck1">Check me out</label>
+                        </div>
+                        <button type="submit" className="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+
+            );
+        }
+    }
+
+    ReactDOM.render(
+        <App />,
+        document.getElementById('root')
+    );
+    
+
+
+
+
+    </script>
+</body>
+
+</html>

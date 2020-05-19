@@ -13,31 +13,6 @@
 <body>
     <div id="root"></div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <script type="text/babel">
    
         const questions = {
@@ -87,7 +62,6 @@
             const field = this.props.current;
 
             return(
-
                 <div className="form-group ">
                     <label htmlFor="inputState">{field.title}</label>
                     <select id="inputState" className="form-control" onChange={this.handleChange} keyparent={this.props.keyParent} >
@@ -131,7 +105,6 @@
                     {
                         field.choices.map((value,key)=> {
                             return(
-
                                 <div key={key} className="form-check">   
                                     <input className="form-check-input" type="radio" name={field.name} id={field.name + key} idradio={key} keyparent={this.props.keyParent} onChange={this.handleChange} />
                                     <label className="form-check-label" htmlFor={field.name}>
@@ -142,7 +115,6 @@
                         })
                     }
                 </div>
-
             );
         }
     }
@@ -169,8 +141,6 @@
     class Wrapper extends React.Component{
         
         render() {
-
-            // console.log('Wrapper ->');
             return(
                 <div>{this.props.children}</div>
             );
@@ -180,22 +150,14 @@
     class Form extends React.Component{
         
         render() {
-
-            // console.log('Form ->');
             return(
-
-
                 <form onSubmit={this.props.formvalid}>
 
                     {this.props.children}
                     <div className="container">
                         <button type="submit" className="btn btn-primary">Submit</button>
                     </div>
-                </form>
-
-
-
-               
+                </form> 
             );
         }
     }
@@ -208,7 +170,6 @@
                 result : [],
                 isSubmit : false,
             }
-
         }
 
 
@@ -216,9 +177,6 @@
             event.preventDefault();
            
             this.setState({isSubmit : true});
-
-            console.log('handleSubmit');
-
         }
 
         calcScore = ()=>{

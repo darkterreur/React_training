@@ -78,9 +78,17 @@
 
         render() {
 
-            console.log('Select ->');
+            console.log('Select ->',this.props);
             return(
-                <div></div>
+                <div className="form-group ">
+                    <label htmlFor="inputState">State</label>
+                    <select id="inputState" className="form-control">
+                        <option value=''>Choose...</option>
+                        <option value='toto'>toto</option>
+                        <option value='tata'>tata</option>
+                        <option value='titi'>titi</option>
+                    </select>
+                </div>
             );
         }
     }
@@ -93,9 +101,16 @@
 
         render() {
 
-            console.log('Radio ->');
+            console.log('Radio ->',this.props);
             return(
-                <div></div>
+               
+                <div className="form-check">
+                    <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" />
+                    <label className="form-check-label" htmlFor="exampleRadios1">
+                        Default radio
+                    </label>
+                </div>
+
             );
         }
     }
@@ -108,9 +123,12 @@
 
         render() {
 
-            console.log('Input ->');
+            console.log('Input ->',this.props);
             return(
-                <div></div>
+                 <div className="form-group">
+                    <label htmlFor="exampleInputEmail1">Email address</label>
+                    <input type="email" className="form-control" id="exampleInputEmail1"  placeholder="Enter email" />
+                </div>
             );
         }
     }
@@ -142,26 +160,34 @@
 
         
         renderForm = () => {
-            console.log('renderForm');
-            //let html = '';
+            let element = [];
 
-            //for (let property in questions) {
-                // console.log('cle ->',property);
-                // console.log('value ->',questions[property]);
+            for (let property in questions) {
                 
-                // (questions[property].type === "input") && html += <Input current={questions[property]} />
-                // (questions[property].type === "Radio") && html += <Radio current={questions[property]} />
-                // (questions[property].type === "Select") && html += <Select current={questions[property]} />
-            //}
-                //console.log('html->',html);
-           // return html;
+                console.log('in for ->',questions[property]);
+
+                if (questions[property].type === "input") {
+                    element.push( <Input current={questions[property]} /> );
+                }
+
+                if (questions[property].type === "radio") {
+                    element.push( <Radio current={questions[property]} /> );
+                }
+
+                if (questions[property].type === "select") {
+                    element.push( <Select current={questions[property]} /> );
+                }
+
+               
+            }
+                console.log('element->',element);
+            return element.map((elm, i) => elm);;
         }
 
         render(){
 
             console.log('data->',questions);
             
-
             return(
                 <div className="container">
                     <Wrapper>
@@ -172,22 +198,8 @@
                     <Form>
                         <form>
 
-                            {this.renderForm}
+                            {this.renderForm()}
 
-                            
-
-                            <div className="form-group">
-                                <label htmlFor="exampleInputEmail1">Email address</label>
-                                <input type="email" className="form-control" id="exampleInputEmail1"  placeholder="Enter email" />
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="exampleInputPassword1">Password</label>
-                                <input type="password" className="form-control" id="exampleInputPassword1" placeholder="Password" />
-                            </div>
-                            <div className="form-check">
-                                <input type="checkbox" className="form-check-input" id="exampleCheck1" />
-                                <label className="form-check-label" htmlFor="exampleCheck1">Check me out</label>
-                            </div>
                             <button type="submit" className="btn btn-primary">Submit</button>
                         </form>
                     </Form>

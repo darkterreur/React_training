@@ -100,15 +100,29 @@
         }
 
         render() {
+            const field = this.props.current;
 
             console.log('Radio ->',this.props);
             return(
-               
-                <div className="form-check">
-                    <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" />
-                    <label className="form-check-label" htmlFor="exampleRadios1">
-                        Default radio
-                    </label>
+                <div key={this.props.elementkey}>   
+                    <div>
+                        {field.title}
+                    </div>
+
+                    {
+                        field.choices.map((value,key)=> {
+                            return(
+
+                                <div className="form-check">   
+                                    <input className="form-check-input" type="radio" name={field.name} id={field.name + key} value={key} />
+                                    <label className="form-check-label" htmlFor={field.name}>
+                                        {value}
+                                    </label>
+
+                                </div>
+                            )
+                        })
+                    }
                 </div>
 
             );
@@ -158,29 +172,27 @@
 
     class App extends React.Component{
 
-        
         renderForm = () => {
             let element = [];
 
             for (let property in questions) {
-                
-                console.log('in for ->',questions[property]);
+
+                console.log('renderForm property->',property);
+                console.log('renderForm questions->',questions);
 
                 if (questions[property].type === "input") {
-                    element.push( <Input current={questions[property]} /> );
+                    element.push( <Input key={property} current={questions[property]} /> );
                 }
 
                 if (questions[property].type === "radio") {
-                    element.push( <Radio current={questions[property]} /> );
+                    element.push( <Radio key={property} elementkey={property} current={questions[property]} /> );
                 }
 
                 if (questions[property].type === "select") {
-                    element.push( <Select current={questions[property]} /> );
+                    element.push( <Select key={property} current={questions[property]} /> );
                 }
-
-               
             }
-                console.log('element->',element);
+
             return element.map((elm, i) => elm);;
         }
 

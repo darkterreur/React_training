@@ -188,8 +188,9 @@
                 <form onSubmit={this.props.formvalid}>
 
                     {this.props.children}
-
-                    <button type="submit" className="btn btn-primary">Submit</button>
+                    <div className="container">
+                        <button type="submit" className="btn btn-primary">Submit</button>
+                    </div>
                 </form>
 
 
@@ -205,7 +206,7 @@
             super(props);
             this.state = {
                 result : [],
-                score : 0,
+                isSubmit : false,
             }
 
         }
@@ -214,29 +215,22 @@
         handleSubmit = (event)=>{
             event.preventDefault();
            
+            this.setState({isSubmit : true});
+
+            console.log('handleSubmit');
+
+        }
+
+        calcScore = ()=>{
+            let score = null;
 
             for (let property in  this.state.result) {
 
-                console.log('boucle property->',property);
-                console.log('boucle result->',this.state.result[property]);
-
-                console.log('****->',questions[property].response);
-
-                if ( this.state.result[property] === questions[property].response ) {
-                    this.setState({
-                        score : this.state.score++
-                    }, ()=>{
-                        console.log('callback->',this.state.score);
-                    })
+                if ( this.state.result[property] == questions[property].response ) {
+                    score++;
                 }
-                
             }
-
-            
-
-
-
-
+            return score;
         }
 
         handleChange = (idParent, value)=>{
@@ -268,17 +262,20 @@
             return element.map((elm, i) => elm);;
         }
 
-        render(){
-            
+        render(){            
+
             return(
                 <div className="container">
                     <Wrapper>
                         <div className="container">
                             <h1>Formulaire</h1>
-                            <div>
-                                <label >Score :</label>
-                                <input type="text" value={this.state.score} />
-                            </div>
+                            {
+                                this.state.isSubmit && <div>
+                                                            <label >Score :</label>
+                                                            <span>{this.calcScore()}</span>
+                                                        </div>
+                            }
+                            
                         </div>
                     </Wrapper>
                     <Form formvalid={this.handleSubmit} >

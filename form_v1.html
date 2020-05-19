@@ -77,16 +77,22 @@
         }
 
         render() {
+            const field = this.props.current;
 
-            console.log('Select ->',this.props);
             return(
+
                 <div className="form-group ">
-                    <label htmlFor="inputState">State</label>
+                    <label htmlFor="inputState">{field.title}</label>
                     <select id="inputState" className="form-control">
                         <option value=''>Choose...</option>
-                        <option value='toto'>toto</option>
-                        <option value='tata'>tata</option>
-                        <option value='titi'>titi</option>
+
+                    {
+                        field.choices.map((value,key)=> {
+                            return(
+                                <option key={key} value={key}>{value}</option>
+                            )
+                        })
+                    }
                     </select>
                 </div>
             );
@@ -101,10 +107,10 @@
 
         render() {
             const field = this.props.current;
+            console.log('test key->',this.props.keyParent);
 
-            console.log('Radio ->',this.props);
             return(
-                <div key={this.props.elementkey}>   
+                <div >   
                     <div>
                         {field.title}
                     </div>
@@ -113,12 +119,11 @@
                         field.choices.map((value,key)=> {
                             return(
 
-                                <div className="form-check">   
-                                    <input className="form-check-input" type="radio" name={field.name} id={field.name + key} value={key} />
+                                <div key={key} className="form-check">   
+                                    <input className="form-check-input" type="radio" name={field.name} id={field.name + key} value={key} onChange={this.props.fieldChange} parentKey={this.props.keyParent} />
                                     <label className="form-check-label" htmlFor={field.name}>
                                         {value}
                                     </label>
-
                                 </div>
                             )
                         })
@@ -136,12 +141,12 @@
         }
 
         render() {
+            const field = this.props.current;
 
-            console.log('Input ->',this.props);
             return(
                  <div className="form-group">
-                    <label htmlFor="exampleInputEmail1">Email address</label>
-                    <input type="email" className="form-control" id="exampleInputEmail1"  placeholder="Enter email" />
+                    <label htmlFor={field.name}>{field.title}</label>
+                    <input type="email" className="form-control" id={field.name}  placeholder="" />
                 </div>
             );
         }
@@ -172,24 +177,45 @@
 
     class App extends React.Component{
 
+        handleSubmit = (event)=>{
+            //event.preventDefault();
+             const { value } = event.target;
+            console.log('handleClick value->',value);
+
+
+
+
+        }
+
+        handleChange = (event)=>{
+
+            //const { value } = event.target;
+             const {name, value} = event.target;
+            console.log('handleChange value->',value);
+            console.log('handleChange name->',name);
+            console.log('handleChange even->',event.target);
+
+
+        }
+
         renderForm = () => {
             let element = [];
 
             for (let property in questions) {
 
-                console.log('renderForm property->',property);
-                console.log('renderForm questions->',questions);
+                // console.log('renderForm property->',property);
+                // console.log('renderForm questions->',questions);
 
                 if (questions[property].type === "input") {
-                    element.push( <Input key={property} current={questions[property]} /> );
+                    element.push( <Input key={property} current={questions[property]} fieldChange={this.handleChange} keyParent={property} /> );
                 }
 
                 if (questions[property].type === "radio") {
-                    element.push( <Radio key={property} elementkey={property} current={questions[property]} /> );
+                    element.push( <Radio key={property} current={questions[property]} fieldChange={this.handleChange} keyParent={property} /> );
                 }
 
                 if (questions[property].type === "select") {
-                    element.push( <Select key={property} current={questions[property]} /> );
+                    element.push( <Select key={property} current={questions[property]} fieldChange={this.handleChange} keyParent={property} /> );
                 }
             }
 
@@ -198,7 +224,7 @@
 
         render(){
 
-            console.log('data->',questions);
+            // console.log('data->',questions);
             
             return(
                 <div className="container">
@@ -208,7 +234,7 @@
                         </div>
                     </Wrapper>
                     <Form>
-                        <form>
+                        <form onSubmit={this.handleSubmit}>
 
                             {this.renderForm()}
 

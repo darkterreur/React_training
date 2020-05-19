@@ -76,6 +76,13 @@
             super(props);
         }
 
+        handleChange = (event)=>{
+            const keyparent = event.target.getAttribute("keyparent");
+            const idselect = event.target.value;
+
+            this.props.fieldChange(keyparent, idselect);
+        }
+
         render() {
             const field = this.props.current;
 
@@ -83,7 +90,7 @@
 
                 <div className="form-group ">
                     <label htmlFor="inputState">{field.title}</label>
-                    <select id="inputState" className="form-control">
+                    <select id="inputState" className="form-control" onChange={this.handleChange} keyparent={this.props.keyParent} >
                         <option value=''>Choose...</option>
 
                     {
@@ -105,9 +112,15 @@
             super(props);
         }
 
+        handleChange = (event)=>{
+            const keyparent = event.target.getAttribute("keyparent");
+            const idradio = event.target.getAttribute("idradio");
+
+            this.props.fieldChange(keyparent, idradio);
+        }
+
         render() {
             const field = this.props.current;
-            console.log('test key->',this.props.keyParent);
 
             return(
                 <div >   
@@ -120,7 +133,7 @@
                             return(
 
                                 <div key={key} className="form-check">   
-                                    <input className="form-check-input" type="radio" name={field.name} id={field.name + key} value={key} onChange={this.props.fieldChange} parentKey={this.props.keyParent} />
+                                    <input className="form-check-input" type="radio" name={field.name} id={field.name + key} idradio={key} keyparent={this.props.keyParent} onChange={this.handleChange} />
                                     <label className="form-check-label" htmlFor={field.name}>
                                         {value}
                                     </label>
@@ -157,7 +170,7 @@
         
         render() {
 
-            console.log('Wrapper ->');
+            // console.log('Wrapper ->');
             return(
                 <div>{this.props.children}</div>
             );
@@ -168,43 +181,76 @@
         
         render() {
 
-            console.log('Form ->');
+            // console.log('Form ->');
             return(
-                <div>{this.props.children}</div>
+
+
+                <form onSubmit={this.props.formvalid}>
+
+                    {this.props.children}
+
+                    <button type="submit" className="btn btn-primary">Submit</button>
+                </form>
+
+
+
+               
             );
         }
     }
 
     class App extends React.Component{
 
+        constructor(props){
+            super(props);
+            this.state = {
+                result : [],
+                score : 0,
+            }
+
+        }
+
+
         handleSubmit = (event)=>{
-            //event.preventDefault();
-             const { value } = event.target;
-            console.log('handleClick value->',value);
+            event.preventDefault();
+           
+
+            for (let property in  this.state.result) {
+
+                console.log('boucle property->',property);
+                console.log('boucle result->',this.state.result[property]);
+
+                console.log('****->',questions[property].response);
+
+                if ( this.state.result[property] === questions[property].response ) {
+                    this.setState({
+                        score : this.state.score++
+                    }, ()=>{
+                        console.log('callback->',this.state.score);
+                    })
+                }
+                
+            }
+
+            
 
 
 
 
         }
 
-        handleChange = (event)=>{
+        handleChange = (idParent, value)=>{
+            let data = this.state.result;
 
-            //const { value } = event.target;
-             const {name, value} = event.target;
-            console.log('handleChange value->',value);
-            console.log('handleChange name->',name);
-            console.log('handleChange even->',event.target);
-
-
+            data[idParent] = value;
+           
+            this.setState({result:data});
         }
 
         renderForm = () => {
             let element = [];
 
             for (let property in questions) {
-
-                // console.log('renderForm property->',property);
-                // console.log('renderForm questions->',questions);
 
                 if (questions[property].type === "input") {
                     element.push( <Input key={property} current={questions[property]} fieldChange={this.handleChange} keyParent={property} /> );
@@ -223,26 +269,22 @@
         }
 
         render(){
-
-            // console.log('data->',questions);
             
             return(
                 <div className="container">
                     <Wrapper>
                         <div className="container">
                             <h1>Formulaire</h1>
+                            <div>
+                                <label >Score :</label>
+                                <input type="text" value={this.state.score} />
+                            </div>
                         </div>
                     </Wrapper>
-                    <Form>
-                        <form onSubmit={this.handleSubmit}>
-
-                            {this.renderForm()}
-
-                            <button type="submit" className="btn btn-primary">Submit</button>
-                        </form>
+                    <Form formvalid={this.handleSubmit} >
+                        {this.renderForm()}
                     </Form>
                 </div>
-
             );
         }
     }

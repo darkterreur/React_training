@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Hello React</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+    <!-- permet de compiler le JSX -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+</head>
+        <body>
+        <div id="root"></div>
+        <script type="text/babel">
+
+        const questions = {
+            'symfony' : {
+                title : "Symfony design pattern", 
+                choices : ['MMV', 'MVC', 'MMVV'], 
+                response : 1, 
+                type : "select",
+                name : "symfony",
+                feedback : 'Symfony est basé sur le pattern MVC'
+            },
+            'react' : {
+                title : "React est-il un framework ?", 
+                choices : ['yes', 'no'], 
+                response : 1, 
+                type : "radio",
+                name : "react",
+                feedback : "React est une librairie"
+            },
+            'jsx' : {
+                title : "JSX c'est quoi ?", 
+                choices : ['JSX est un langage compilé', 'JSX est un sur-ensemble développé par Facebook'], 
+                response : 1, 
+                type: "radio" ,
+                name : "jsx",
+                feedback : 'JSX est un sur ensemble à JS'
+            }
+        }
+        const numberQuestions = 3 ;
+
+        class Form extends React.Component{
+
+            handleSubmit = (e) => {
+                e.preventDefault();
+                this.props.handleSubmit();
+            }
+
+            render(){
+                const { valid } = this.props;
+
+                return(
+                    <form onSubmit={this.handleSubmit} >
+                        {this.props.children}
+                        <p><button className="btn btn-dark" disabled={!valid}>Envoyer</button></p>
+                    </form>
+                )
+            }
+        }
+
+        class Input extends React.Component{
+
+            render(){
+
+                return (
+                    <React.Fragment>
+                        <label>{this.props.title}</label>
+                        <input 
+                            type={this.props.type}
+                            onChange={this.props.handleChange}
+                            value = {this.props.value}
+                            name={this.props.name}
+                        />
+                    </React.Fragment>
+                )
+            }
+        }
+
+        class Radio extends React.Component{
+
+            render(){
+
+                return (
+                    <React.Fragment>
+                        <input 
+                            type="radio"
+                            onChange={this.props.handleChange}
+                            value = {this.props.value}
+                            name={this.props.name}
+                            className="form-check-input"
+                        />
+                        <label className="form-check-label" >{this.props.title}</label>
+                    </React.Fragment>
+                )
+            }
+        }
+
+        class Wrapper extends React.Component{
+
+            render(){
+                const { classes } = this.props;
+
+                return (
+                    <div className={classes.join(' ')}>
+                        {this.props.children}
+                    </div>
+                )
+            }
+        }
+
+        class Select extends React.Component{
+            render(){
+
+                return (
+                    <React.Fragment>
+                        <label  >{this.props.title}</label>
+                        <select name={this.props.name} onChange={this.props.handleChange} >
+                            {this.props.children}
+                        </select>
+                    </React.Fragment>
+                )
+            }
+        }
+        class App extends React.Component{
+
+            // surcharge du constructor parent meme signature meme nombre d'argument
+            constructor(props) {
+
+                // réexécuter le constructor du parent pour préparer les props dans ta classe
+                super(props);
+
+                // définition des states dans notre composant
+                this.state = { 
+                    email : '',
+                    choices : new Map,
+                    isSubmit : false,
+                    score : 0,
+                    messages : []
+                };
+            }
+
+            handleSubmit = () =>{
+                let score = 0;
+                let feedback = [];
+
+                for(const key in questions){
+
+                    if( this.state.choices.get(key) == questions[key].response ) { 
+                        score++;
+                        feedback.push(`Bravo ! ${questions[key].feedback}`);
+                    }else{
+                        feedback.push(`Dommage voyez le feedback : ${questions[key].feedback}`);
+                    }
+                }
+
+                this.setState({
+                    score : score,
+                    messages : feedback,
+                    isSubmit : true
+                });
+            }
+
+            handleChange = (e) => {
+                const { name, value } = e.target;
+
+                if( name === 'email' ){
+                    this.setState({email : value});
+
+                    return;
+                }
+
+                // Map JS
+                this.state.choices.set(name, value);
+                this.setState({ choices : this.state.choices });
+            }
+
+            showQuestions = () =>{
+
+                const Questions = [];
+
+                for(const key in questions){
+
+                    if( key === 'symfony') {
+
+                        Questions.push(
+                            <Wrapper key={key} classes={['form-group']}>
+                                <Select name={key} title={questions[key].title} handleChange={this.handleChange} >
+                                    {questions[key].choices.map((choice, i) => (
+                                        <option key={`${key}-${i}`} value={i}>{choice}</option>
+                                    ))}
+                                </Select>
+                            </Wrapper>
+                        )
+
+                        continue;
+                    }
+
+                    Questions.push(
+                        <Wrapper key={key} classes={['form-group']}>
+                            <h2>{questions[key].title}</h2>
+                            {questions[key].choices.map((choice, i) => (
+                                <Wrapper key={`${key}-${i}`} classes={['form-check']}>
+                                    <Radio 
+                                        name={key}
+                                        handleChange={this.handleChange}
+                                        value={i}
+                                        title={choice}
+                                    />
+                                </Wrapper>
+                            ))}
+                        </Wrapper>
+                    )
+                }
+
+                return Questions;
+            }
+            
+            render(){
+
+                const valid = this.state.email && this.state.choices.size === numberQuestions;
+                
+                if( this.state.isSubmit === false )
+                    return (
+                        <Form handleSubmit={this.handleSubmit} valid={valid} >
+                            <Wrapper classes={['form-group']}>
+                                <Input 
+                                    title="Laissez nous votre adresse email"
+                                    name="email"
+                                    type="email"
+                                    handleChange={this.handleChange}
+                                />
+                            </Wrapper>
+                                {this.showQuestions().map((q, i) => q )}
+                        </Form>
+                    )
+                
+                if( this.state.isSubmit === true)
+                    return(
+                        <React.Fragment>
+                            <h2>Score : {this.state.score} </h2>
+                            {this.state.messages.map((message, i) => (
+                                <p key={i} >{message}</p>
+                            ))}
+                        </React.Fragment>
+                    )
+            }
+        }
+
+        const container = document.getElementById('root');
+        ReactDOM.render(
+            <App />,
+            container
+        );
+
+        </script>
+</body>
+</html>

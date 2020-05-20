@@ -8,6 +8,17 @@
     <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
     
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <style>
+        .footer{
+            margin-top: 30px;
+        }
+
+        .header{
+            margin-bottom: 30px;
+            text-align: center;
+        }
+    </style>
 </head>
 
 <body>
@@ -151,13 +162,30 @@
         
         render() {
             return(
-                <form onSubmit={this.props.formvalid}>
-
-                    {this.props.children}
-                    <div className="container">
-                        <button type="submit" className="btn btn-primary">Submit</button>
+                <div className="row">
+                    <div className="col-2">
+                        <button type="button" className="btn btn-light" onClick={this.props.formprev} > Gauche </button>
                     </div>
-                </form> 
+
+                    <div  className="col-8">
+                         <form onSubmit={this.props.formvalid}>
+
+                            {this.props.children}
+                            <div className="container footer">
+                                <div class="row">
+                                    <button type="submit" className="btn btn-primary col-2">Submit</button>
+                                    <div className="col-4"></div>
+                                    <button type="reset" className="btn btn-secondary col-2" onClick={this.props.formclear} >Clear</button>
+                                </div>
+                            </div>
+                        </form> 
+                    </div>
+                
+                    <div className="col-2">
+                        <button type="button" className="btn btn-light" onClick={this.props.formnext} > Droite </button>
+                    </div>
+                </div>
+               
             );
         }
     }
@@ -169,9 +197,78 @@
             this.state = {
                 result : [],
                 isSubmit : false,
+                position : null
+            }
+
+            this.firstposition();
+           
+        }
+
+        firstposition =  ()=>{
+            for (let property in questions) {
+                if (this.state.position === null) {
+                    
+                    this.state.position = property;
+                    break;
+                } 
             }
         }
 
+        next = ()=>{
+            let next = null;
+            let current = false;
+
+            for (let property in questions) {
+
+                if (this.state.position === property ) {
+                    current = true;
+                } 
+
+                if (this.state.position !== property && current === true) {
+
+                    this.setState({
+                        position : property
+                    });
+                    break;
+                }
+            }
+
+
+
+        }
+
+        prev = ()=>{
+            let last = null;
+            let first = 0;
+           
+            for (let property in questions) {
+              
+                if (this.state.position === property && first===0) {
+                    first = 1;
+                    break;
+                } 
+
+                if (this.state.position === property && first!==0) {
+                    this.setState({
+                        position : last
+                    });
+                    break;
+                }
+                first = 1;
+                last = property;
+
+            }
+
+           
+        }
+
+        handleClear = ()=>{
+            this.firstposition();
+            this.setState({
+                result : [],
+                isSubmit : false,
+            });
+        }
 
         handleSubmit = (event)=>{
             event.preventDefault();
@@ -204,15 +301,15 @@
 
             for (let property in questions) {
 
-                if (questions[property].type === "input") {
+                if (questions[property].type === "input" && this.state.position === property) {
                     element.push( <Input key={property} current={questions[property]} fieldChange={this.handleChange} keyParent={property} /> );
                 }
 
-                if (questions[property].type === "radio") {
+                if (questions[property].type === "radio" && this.state.position === property) {
                     element.push( <Radio key={property} current={questions[property]} fieldChange={this.handleChange} keyParent={property} /> );
                 }
 
-                if (questions[property].type === "select") {
+                if (questions[property].type === "select" && this.state.position === property) {
                     element.push( <Select key={property} current={questions[property]} fieldChange={this.handleChange} keyParent={property} /> );
                 }
             }
@@ -221,11 +318,11 @@
         }
 
         render(){            
-
+            console.log('this.state->',this.state);
             return(
                 <div className="container">
                     <Wrapper>
-                        <div className="container">
+                        <div className="container header">
                             <h1>Formulaire</h1>
                             {
                                 this.state.isSubmit && <div>
@@ -236,7 +333,7 @@
                             
                         </div>
                     </Wrapper>
-                    <Form formvalid={this.handleSubmit} >
+                    <Form formvalid={this.handleSubmit} formclear={this.handleClear} formnext={this.next} formprev={this.prev} >
                         {this.renderForm()}
                     </Form>
                 </div>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Hello React</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+    <!-- permet de compiler le JSX -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+
+class Form extends React.Component {
+
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.handleSubmit();
+    }
+
+    render() {
+
+        const { valid } = this.props;
+
+        return (
+            <form onSubmit={this.handleSubmit}>
+                {this.props.children}
+                <p><button disabled={!valid} type="submit" className="btn btn-primary">Submit</button></p>
+            </form>
+        );
+    }
+}
+
+class Wrapper extends React.Component{
+
+    render(){
+
+        const { classes } = this.props;
+
+        console.log(classes.join(' '))
+
+        return (
+            <div className={classes.join(' ')} >
+                {this.props.children}
+            </div>
+        )
+    }
+}
+
+class Select extends React.Component{
+
+    render(){
+        return (
+            <React.Fragment>
+                <label htmlFor={this.props.name}> {this.props.title} </label>
+                <select name={this.props.name} onChange={this.props.handleChange} >
+                    {this.props.children}
+                </select>
+            </React.Fragment>
+        )
+    }
+}
+
+class Input extends React.Component{
+
+    render(){
+
+        return (
+            <label htmlFor={this.props.name} >
+                {this.props.title}
+                <input
+                    type={this.props.type}
+                    onChange={this.props.handleChange}
+                    value = {this.props.value}
+                    name={this.props.name}
+                />
+            </label>
+        )
+    }
+}
+
+class File extends React.Component{
+
+    render(){
+
+        return (
+            <label htmlFor={this.props.name} >
+                {this.props.title}
+                <input
+                    type="file"
+                    onChange={this.props.handleChangeFile}
+                    value = {this.props.value}
+                    name={this.props.name}
+                />
+            </label>
+        )
+    }
+}
+
+class Radio extends React.Component{
+
+    render(){
+
+        return (
+            <React.Fragment>
+                <input
+                    type="radio"
+                    onChange={this.props.handleChange}
+                    value = {this.props.value}
+                    name={this.props.name}
+                    checked={this.props.checked}
+                    className="form-check-input"
+                />
+                <label className="form-check-label" >
+                    {this.props.title}
+                </label>
+            </React.Fragment>
+        )
+    }
+}
+
+const questions = {
+    'symfony' : {
+        title : "Symfony design pattern", 
+        choices : ['MMV', 'MVC', 'MMVV'], 
+        response : 1, 
+        type : "select",
+        name : "symfony",
+        feedback : 'Symfony est basé sur le pattern MVC'
+    },
+    'react' : {
+        title : "React est-il un framework ?", 
+        choices : ['yes', 'no'], 
+        response : 1, 
+        type : "radio",
+        name : "react",
+        feedback : "React est une librairie"
+    },
+    'jsx' : {
+        title : "JSX c'est quoi ?", 
+        choices : ['JSX est un langage compilé', 'JSX est un sur-ensemble développé par Facebook'], 
+        response : 1, 
+        type: "radio" ,
+        name : "jsx",
+        feedback : 'JSX est un sur ensemble à JS'
+    }
+}
+
+const numberQuestions = 3 ;
+
+class App extends React.Component{
+
+    constructor(props) {
+        super(props);
+        this.state = { 
+            email: '',
+            choice : '',
+            inscription : false,
+            score : 0,
+            messages : [],
+            imagePreviewUrl: null,
+            count : 0,
+            questions : [],
+            responses : [],
+            feedbacks : []
+        };
+    }
+
+    /*
+    *  Load des Questions dans un array 
+    */
+    loadQuestion = () => {
+
+        const { symfony, react, jsx } = questions;
+
+        this.state.questions.push(
+            <Wrapper classes={['form-group']} >
+                <Select title="Symfony design Pattern" name="symfony" handleChange={this.handleChange}>
+                    {symfony.choices.map((choice, i) => <option key={i} value={i}>{choice}</option>)}
+                </Select>
+            </Wrapper>
+        );
+
+        this.state.responses.push(symfony.response);
+        this.state.feedbacks.push(symfony.feedback);
+
+        for( const key in questions ){
+
+            if(key === 'symfony') continue;
+
+            this.state.questions.push(
+                <Wrapper classes={['form-group']} >
+                    <h2>{questions[key].title}</h2>
+                    {questions[key].choices.map((choice, i) => 
+                        <Wrapper classes={['form-check']}  key={choice} >
+                            <Radio 
+                                name={key}
+                                type="radio" 
+                                handleChange={this.handleChange} 
+                                value={i} 
+                                title = {choice}
+                            />
+                        </Wrapper>
+                    )}
+                </Wrapper>
+            );
+
+            this.state.responses.push(questions[key].response);
+            this.state.feedbacks.push(questions[key].feedback);
+        }
+
+        this.setState({ questions : this.state.questions });
+    }
+
+    componentDidMount(){
+        this.loadQuestion();
+    }
+
+    handleSubmit = () => {
+        if( this.state.count < numberQuestions ){
+
+            let message = 'Dommage';
+            if(this.state.responses[this.state.count] == this.state.choice){
+                this.state.score++;
+                message = 'Bravo !';
+            }
+
+            this.state.messages.push(`${message} ${this.state.feedbacks[this.state.count]}`);
+
+            this.setState({ 
+                count : this.state.count + 1,
+                score : this.state.score,
+                messages : this.state.messages,
+                choice : ''
+                });
+
+                console.log(this.state)
+        }
+    }
+
+    handleChange = (e) => {
+        const { name, value } = e.target;
+        this.setState({ choice : value })
+    }
+
+    handleSubmitInscription = (e) => {
+        this.setState({
+            inscription : true
+        })
+    }
+
+    handleChangeInscription = (e) => {
+        const { name, value } = e.target;
+        this.setState({ [name] : value });
+    }
+
+    handleChangeFile = e => {
+        const  file  = e.target.files[0];
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+            this.setState({
+                imagePreviewUrl: reader.result
+            });
+        }
+
+        reader.readAsDataURL(file);
+    }
+    
+    render(){
+
+        /**
+        * On a 3 affichages dans le render différents 1. le formulaire d'inscription 2. les question 3. le feedback
+        */
+
+        if( this.state.count === numberQuestions )
+
+            return(
+                <React.Fragment>
+                    <p>Score {this.state.score}</p>
+                    {this.state.imagePreviewUrl && <img src={this.state.imagePreviewUrl} className="img-thumbnail" />}
+                    {this.state.messages.map((m,i) => (<p key={i}>{m}</p>))}
+                </React.Fragment>
+            );
+
+        if( this.state.inscription === false )
+            return (
+                <Wrapper classes={['container']} >
+                        <Form handleSubmit={this.handleSubmitInscription} valid={ this.state.email !== '' } >
+                                <React.Fragment>
+                                    <Wrapper classes={['form-group']} >
+                                        <Input 
+                                            title = "Laissez nous votre email"
+                                            name="email" 
+                                            type="email" 
+                                            handleChange={this.handleChangeInscription} 
+                                            value={this.state.email} 
+                                        />
+                                    </Wrapper>
+                                    <Wrapper classes={['form-group']} >
+                                        <File 
+                                            title = "Avatar"
+                                            name="avatar" 
+                                            handleChangeFile={this.handleChangeFile} 
+                                        />
+                                    </Wrapper>
+                                </React.Fragment>
+                        </Form>
+                </Wrapper>
+            );
+
+            if( this.state.count < numberQuestions && this.state.inscription === true )
+                return (
+                    <Wrapper classes={['container']} >
+                        <Form handleSubmit={this.handleSubmit} valid={ this.state.choice !== '' } >
+                                {this.state.questions[this.state.count]}
+                        </Form>
+                    </Wrapper>
+                )
+    }
+}
+
+const container = document.getElementById('root');
+ReactDOM.render(
+    <App />,
+    container
+);
+
+</script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+.panelWrapper{
+    background-color: silver;
+    width: 300px;
+    height: 400px;
+    border: 1px solid black;
+    border-radius: 5px;
+    box-shadow: 3px 3px 3px 0px rgba(119, 119, 119, 0.75);
+    -moz-box-shadow: 3px 3px 3px 0px rgba(119, 119, 119, 0.75);
+    -webkit-box-shadow: 3px 3px 3px 0px rgba(119, 119, 119, 0.75);
+}
+
+.deleteElemen:hover{
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.headerPanel{
+    color: silver;
+    background-color: black;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.blocBtn{
+    display: flex;
+    justify-content: space-around;
+}
+
+.btnColor{
+    height: 25px;
+    width: 40px;
+}

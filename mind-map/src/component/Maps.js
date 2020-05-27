@@ -35,18 +35,19 @@ class Maps extends React.Component{
     }
 
     deleteChild = (key)=>{
-        console.log('parentDeleteChild key->',this.key);
-        console.log('parentDeleteChild child->',this.state.child);
+        console.log('deleteChild key->',key);
+        console.log('deleteChild child->',this.state.child);
         // if (this.state.child.length > 0)
         
-        // let aChild = this.state.child.splice(key,1);
+        let aChild = this.state.child.splice(key,1);
 
 
-        // console.log('parentDeleteChild aChild->',aChild);
+        console.log('deleteChild aChild->',aChild);
+        console.log('deleteChild this.state.child->',this.state.child);
 
-        // this.setState({
-        //     child : aChild
-        // });
+        this.setState({
+            child : this.state.child
+        });
     }
 
     childCallDelete = ()=>{

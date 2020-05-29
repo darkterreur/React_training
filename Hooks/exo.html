@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Hello React</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+   
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+
+<style>
+    .top{
+        margin-top: 30px;
+    }
+</style>
+
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+    
+
+    const Counter = ()=>{
+        const [count, setCount] = React.useState(0);
+        const [active, setActive] = React.useState(false);
+
+        let idInterval = React.useRef(null);
+
+
+        const stop = ()=>{
+            if (idInterval.current) {
+                clearInterval(idInterval.current);
+            }
+        }
+
+        const start = ()=>{
+
+            idInterval.current = setInterval(() => {
+                console.log();
+                setCount( (count)=>{ return count + 1 });
+            }, 1000);
+        }
+
+        const reset = ()=>{
+           if ( idInterval.current && count !== 0 ) {
+               setCount(0);
+                stop();
+           }
+        }
+
+        React.useEffect( () => {
+            if (active) {
+                start();
+            }
+
+            return () => { 
+                stop();
+            }
+        },
+            [active]
+        );
+
+
+
+        return(
+            <div>
+                <p>Counter : {count}</p>
+                <button onClick={ ()=> setActive(!active) } > { (!active) ? 'Start' : 'Stop' } </button>
+                
+               { ( count > 0 ) && <button onClick={reset} >Reset</button>  }
+                
+            </div>
+        );
+    }
+
+
+    const App = ()=>{
+
+        const [show, setShow] = React.useState(false);
+
+        return(
+            <div className="container top" >
+                <div className="container-fluide">
+                    <button onClick={ ()=> setShow(!show) } > Toggle show </button>
+                </div>
+                
+                { show && <Counter /> }
+                
+            </div>
+        );
+    }
+
+
+
+
+
+    ReactDOM.render(
+        <App />,
+         document.getElementById('root')
+    );
+    
+
+
+
+
+
+    </script>
+</body>
+
+</html>

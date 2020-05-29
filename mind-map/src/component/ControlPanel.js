@@ -13,7 +13,6 @@ class ControlPanel extends React.Component{
     }
 
     handleChange = (event)=>{
-
         const {name, value} = event.target;
   
         if (this.props.currentNode) {
@@ -23,7 +22,6 @@ class ControlPanel extends React.Component{
     }
 
     deleteNode = ()=>{
-        console.log('deleteNode');
         if (this.props.currentNode) {
             this.props.currentNode.childCallDelete();
         }

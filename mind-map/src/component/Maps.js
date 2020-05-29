@@ -36,24 +36,22 @@ class Maps extends React.Component{
 
     deleteChild = (key)=>{
         console.log('deleteChild key->',key);
-        console.log('deleteChild child->',this.state.child);
+        console.log('deleteChild this.state.child->',this.state.child);
         // if (this.state.child.length > 0)
         
-        let aChild = this.state.child.splice(key,1);
+        let aChild = this.state.child;
+        aChild.splice(2,1);
 
 
         console.log('deleteChild aChild->',aChild);
         console.log('deleteChild this.state.child->',this.state.child);
 
         this.setState({
-            child : this.state.child
+            child : aChild
         });
     }
 
     childCallDelete = ()=>{
-        console.log('childCallDelete');
-        console.log('childCallDelete props->',this.props);
-        console.log('childCallDelete props->',this.props.keyMap);
         this.props.parentDeleteChild(this.props.keyMap);
     }
 
